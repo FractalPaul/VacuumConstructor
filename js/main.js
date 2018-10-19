@@ -10,13 +10,18 @@ var camera = new THREE.OrthographicCamera(frustumSize * aspect / -2, frustumSize
 var controls = null;
 var renderer = new THREE.WebGLRenderer();
 var meshMaterial = new THREE.MeshStandardMaterial({
-    color: 0x156289,
+    color: vacuumParms.color,
     opacity: vacuumParms.opacity,
-    transparent: true
+    transparent: true,
+    depthTest: vacuumParms.depthTest,
+    depthWrite: vacuumParms.depthWrite,
+    roughness: vacuumParms.roughness,
+    wireframe: vacuumParms.wireframe
 }); //new THREE.MeshPhongMaterial({ color: 0x156289, emissive: 0x072534, side: THREE.DoubleSide, flatShading: false });
 var geometryS = new THREE.SphereBufferGeometry(vacuumParms.radius, 32, 32);
 
 Initialize();
+scaleCamera();
 
 drawGeometry();
 
@@ -43,13 +48,13 @@ function Initialize() {
 function initLights(scene) {
     //if (vacuumParms.ambientLight) {
     // Ambient light
-    var light = new THREE.AmbientLight(0xFFFFFF, 0.4);
+    var light = new THREE.AmbientLight(0xFFFFFF, 2.5);
     scene.add(light);
     //} else {
     // Point lights (3)
     var lights = [];
     var distL = -400;
-    var intensity = .5;
+    var intensity = 0.3;
     lights[0] = new THREE.PointLight(0xffffff, intensity, distL);
     lights[1] = new THREE.PointLight(0xffffff, intensity, distL);
     lights[2] = new THREE.PointLight(0xffffff, intensity, distL);
