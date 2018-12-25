@@ -5,6 +5,7 @@ var vacuumParms = {
     zoom: 5,
     radius: 0.5,
     rotateAnimation: false,
+    rotateReset: false,
     roughness: 0.4,
     metalness: 0.4,
     depthTest: false,
@@ -15,7 +16,7 @@ var vacuumParms = {
 
 window.onload = function () {
 
-    gui.add(vacuumParms, 'numSpheres', 0, 12,1)
+    gui.add(vacuumParms, 'numSpheres', 0, 12, 1)
         .name("# of Spheres")
         .onChange(function (newValue) { // Listen to changes within the GUI
             //console.log("Value changed to:  ", newValue);
@@ -25,13 +26,13 @@ window.onload = function () {
 
     gui.addColor(vacuumParms, 'color')
         .onChange(function (newValue) {
-            meshMaterial.color.set( newValue);
+            meshMaterial.color.set(newValue);
         })
         .listen();
 
     gui.add(vacuumParms, 'zoom', 1, 10)
         .onChange(function (newValue) {
-           scaleCamera();
+            scaleCamera();
         })
         .listen();
 
@@ -42,14 +43,14 @@ window.onload = function () {
             //drawGeometry();
         })
         .listen(); // Listen to changes outside the GUI - GUI will update when changed from outside
-    gui.add(vacuumParms, 'roughness', 0,1)
+    gui.add(vacuumParms, 'roughness', 0, 1)
         .name("Reflectivity")
         .onChange(function (newValue) {
             meshMaterial.roughness = vacuumParms.roughness;
         })
         .listen();
 
-    gui.add(vacuumParms, 'metalness', 0,1)
+    gui.add(vacuumParms, 'metalness', 0, 1)
         .name("Shine")
         .onChange(function (newValue) {
             meshMaterial.metalness = vacuumParms.metalness;
@@ -82,5 +83,14 @@ window.onload = function () {
         .onChange(function (newValue) {
 
         })
-        .listen();    
+        .listen();
+    gui.add(vacuumParms, 'rotateReset')
+        .name('Rotation Reset')
+        .onChange(function (newValue) {
+            if (vacuumParms.rotateReset) {
+                rotationReset();
+                vacuumParms.rotateReset = false;
+            }
+        })
+        .listen();
 };
