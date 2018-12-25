@@ -1,7 +1,7 @@
 var vacuumParms = {
     numSpheres: 6,
     color: 0x2f7dbd,
-    opacity: 0.5,
+    opacity: 0.02,
     zoom: 5,
     radius: 0.5,
     rotateAnimation: false,
@@ -10,13 +10,13 @@ var vacuumParms = {
     metalness: 0.4,
     depthTest: false,
     depthWrite: true,
-    wireframe: false,
+    wireframe: true,
     wireframeline: 0.2
 }
 
 window.onload = function () {
 
-    gui.add(vacuumParms, 'numSpheres', 0, 12, 1)
+    gui.add(vacuumParms, 'numSpheres', 0, 16, 1)
         .name("# of Spheres")
         .onChange(function (newValue) { // Listen to changes within the GUI
             //console.log("Value changed to:  ", newValue);

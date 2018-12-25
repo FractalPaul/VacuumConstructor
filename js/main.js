@@ -110,6 +110,8 @@ function drawGeometry() {
 
         if (vacuumParms.rotateAnimation) {
             group.rotation.y += 0.01;
+            groupLines.rotation.y += 0.01;
+            groupPoints.rotation.y += 0.01;
         }
 
         renderer.render(scene, camera);
@@ -211,6 +213,14 @@ function rotationReset() {
     group.rotation.y = 0;
     group.rotation.x = 0;
     group.rotation.z = 0;
+
+    groupLines.rotation.x= 0;
+    groupLines.rotation.y = 0;
+    groupLines.rotation.z = 0;
+
+    groupPoints.rotation.x = 0;
+    groupPoints.rotation.y = 0;
+    groupPoints.rotation.z = 0;
 }
 
 function showSpheres(numSpheres) {
@@ -224,6 +234,7 @@ function showSpheres(numSpheres) {
     for (var i = groupPoints.children.length - 1; i > numSpheres; i--) {
         groupPoints.children[i].visible = false;
     }
+    
     // make visible
     for (var i = 0; i < numSpheres; i++) {
         if (i < group.children.length)
@@ -239,7 +250,7 @@ function showSpheres(numSpheres) {
 
 function AddSpheres(radius, group, geometry, mesh) {
     var deltaAngle = Math.PI / 3;
-    var offsetAngle = Math.PI / 3;
+    //var offsetAngle = Math.PI / 3;
     var polarAngle = 0;
     var azimuthAngle = 0;
 
@@ -259,35 +270,38 @@ function AddSpheres(radius, group, geometry, mesh) {
     }
 
     azimuthAngle = deltaAngle;
-    polarAngle = deltaAngle;
     
-    // Add X-Z Axis spheres surrounding the central sphere. 2 in front
-    for (var i = 0; i < 2; i++) {
-        var sphere = new THREE.Mesh(geometry, mesh);
+    while (azimuthAngle < Math.PI) {
+        polarAngle = deltaAngle;
+        // Add X-Z Axis spheres surrounding the central sphere. 2 in front
+        for (var i = 0; i < 2; i++) {
+            var sphere = new THREE.Mesh(geometry, mesh);
 
-        sphere.position.x = calcSphericalToX(radius, polarAngle, azimuthAngle);
-        sphere.position.y = calcSphericalToY(radius, polarAngle, azimuthAngle);
-        sphere.position.z = calcSphericalToZ(radius, polarAngle);
+            sphere.position.x = calcSphericalToX(radius, polarAngle, azimuthAngle);
+            sphere.position.y = calcSphericalToY(radius, polarAngle, azimuthAngle);
+            sphere.position.z = calcSphericalToZ(radius, polarAngle);
 
-        points.push(sphere.position.x, sphere.position.y, sphere.position.z);
+            points.push(sphere.position.x, sphere.position.y, sphere.position.z);
 
-        group.add(sphere);
-        polarAngle += deltaAngle;
-    }
-    polarAngle = Math.PI + deltaAngle;
+            group.add(sphere);
+            polarAngle += deltaAngle;
+        }
+        polarAngle = Math.PI + deltaAngle;
 
-    // Add X-Z Axis spheres surrounding the central sphere. 2 in back.
-    for (var i = 0; i < 2; i++) {
-        var sphere = new THREE.Mesh(geometry, mesh);
+        // Add X-Z Axis spheres surrounding the central sphere. 2 in back.
+        for (var i = 0; i < 2; i++) {
+            var sphere = new THREE.Mesh(geometry, mesh);
 
-        sphere.position.x = calcSphericalToX(radius, polarAngle, azimuthAngle);
-        sphere.position.y = calcSphericalToY(radius, polarAngle, azimuthAngle);
-        sphere.position.z = calcSphericalToZ(radius, polarAngle);
+            sphere.position.x = calcSphericalToX(radius, polarAngle, azimuthAngle);
+            sphere.position.y = calcSphericalToY(radius, polarAngle, azimuthAngle);
+            sphere.position.z = calcSphericalToZ(radius, polarAngle);
 
-        points.push(sphere.position.x, sphere.position.y, sphere.position.z);
+            points.push(sphere.position.x, sphere.position.y, sphere.position.z);
 
-        group.add(sphere);
-        polarAngle += deltaAngle;
+            group.add(sphere);
+            polarAngle += deltaAngle;
+        }
+        azimuthAngle += deltaAngle;
     }
 }
 
