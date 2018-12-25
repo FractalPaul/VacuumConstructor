@@ -1,7 +1,7 @@
 var vacuumParms = {
     numSpheres: 6,
     color: 0x2f7dbd,
-    opacity: 0.02,
+    opacity: 0.2,
     zoom: 5,
     radius: 0.5,
     rotateAnimation: false,
@@ -10,7 +10,7 @@ var vacuumParms = {
     metalness: 0.4,
     depthTest: false,
     depthWrite: true,
-    wireframe: true,
+    wireframe: false,
     wireframeline: 0.2
 }
 
