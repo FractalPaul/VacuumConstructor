@@ -234,7 +234,7 @@ function showSpheres(numSpheres) {
     for (var i = groupPoints.children.length - 1; i > numSpheres; i--) {
         groupPoints.children[i].visible = false;
     }
-    
+
     // make visible
     for (var i = 0; i < numSpheres; i++) {
         if (i < group.children.length)
@@ -254,32 +254,34 @@ function AddSpheres(radius, group, geometry, mesh) {
     var polarAngle = 0;
     var azimuthAngle = 0;
 
-    // add X-Y axis spheres surrounding the central sphere. Max 6 spheres
-    for (var i = 0; i < 6; i++) {
+    // add North and South pole X-Y axis spheres surrounding the central sphere. 
+    for (var i = 0; i < 2; i++) {
+        // Make the north pole (polar angle is zero)
         var sphere = new THREE.Mesh(geometry, mesh);
 
         sphere.position.x = calcSphericalToX(radius, polarAngle, azimuthAngle);
-        sphere.position.y = calcSphericalToY(radius, polarAngle, azimuthAngle);
-        sphere.position.z = calcSphericalToZ(radius, polarAngle);
+        sphere.position.z = calcSphericalToY(radius, polarAngle, azimuthAngle);
+        sphere.position.y = calcSphericalToZ(radius, polarAngle);
 
         points.push(sphere.position.x, sphere.position.y, sphere.position.z);
 
         group.add(sphere);
 
-        polarAngle += deltaAngle;
+        polarAngle = Math.PI;
     }
 
-    azimuthAngle = deltaAngle;
+    polarAngle= deltaAngle;
+    azimuthAngle = 0;
     
-    while (azimuthAngle < Math.PI) {
+    while (azimuthAngle < Math.PI *1.01) {
         polarAngle = deltaAngle;
         // Add X-Z Axis spheres surrounding the central sphere. 2 in front
         for (var i = 0; i < 2; i++) {
             var sphere = new THREE.Mesh(geometry, mesh);
 
             sphere.position.x = calcSphericalToX(radius, polarAngle, azimuthAngle);
-            sphere.position.y = calcSphericalToY(radius, polarAngle, azimuthAngle);
-            sphere.position.z = calcSphericalToZ(radius, polarAngle);
+            sphere.position.z = calcSphericalToY(radius, polarAngle, azimuthAngle);
+            sphere.position.y = calcSphericalToZ(radius, polarAngle);
 
             points.push(sphere.position.x, sphere.position.y, sphere.position.z);
 
@@ -293,8 +295,8 @@ function AddSpheres(radius, group, geometry, mesh) {
             var sphere = new THREE.Mesh(geometry, mesh);
 
             sphere.position.x = calcSphericalToX(radius, polarAngle, azimuthAngle);
-            sphere.position.y = calcSphericalToY(radius, polarAngle, azimuthAngle);
-            sphere.position.z = calcSphericalToZ(radius, polarAngle);
+            sphere.position.z = calcSphericalToY(radius, polarAngle, azimuthAngle);
+            sphere.position.y = calcSphericalToZ(radius, polarAngle);
 
             points.push(sphere.position.x, sphere.position.y, sphere.position.z);
 
