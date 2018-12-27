@@ -76,7 +76,7 @@ function initLights(scene) {
 
 function resetGroup() {
     //var ch = group.children;
-    console.log('num children: ' + group.children.length);
+    //console.log('num children: ' + group.children.length);
     while (group.children.length > 0) {
         group.children.forEach(element => {
             group.remove(element);
@@ -121,33 +121,31 @@ function drawGeometry() {
 }
 
 function drawPoints(scene) {
-
     var color = new THREE.Color();
     var matPoint = new THREE.PointsMaterial({
         size: 0.1,
         vertexColors: THREE.VertexColors
     });
-
     for (var i = 0; i < points.length; i++) {
         if (i % 3 == 0) {
-            color.setRGB(10, 212, 10);
-
-            var eachPoint = [];
-            eachPoint.push(points[i], points[i + 1], points[i + 2]);
             var geoPoint = new THREE.BufferGeometry();
-            var pointColor = [];
-            pointColor.push(color.r, color.g, color.b);
+            var eachPoint = [];
+            var colors = [];
+
+            eachPoint.push(points[i], points[i + 1], points[i + 2]);
+            color.setRGB(255, 12, 12);
+            colors.push(color.r, color.g, color.b);
+
             geoPoint.addAttribute('position', new THREE.Float32BufferAttribute(eachPoint, 3));
-            geoPoint.addAttribute('color', new THREE.Float32BufferAttribute(pointColor, 3));
+            geoPoint.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
             geoPoint.computeBoundingSphere();
-
             var pointMesh = new THREE.Points(geoPoint, matPoint);
             groupPoints.add(pointMesh);
         }
     }
-
     scene.add(groupPoints);
+    //console.log('Group Points length: ' + groupPoints.children.length);
 }
 
 function drawLines(scene, points, radius) {
@@ -160,6 +158,8 @@ function drawLines(scene, points, radius) {
 
     var positions = [];
     var colors = [];
+    //console.log('draw lines points.length: ' + points.length);
+
     for (var i = 0; i < points.length - 1; i++) {
         if (i % 3 == 0) {
             for (var j = i + 1; j < points.length; j++) {
@@ -171,15 +171,10 @@ function drawLines(scene, points, radius) {
                             firstZ = points[i + 2];
                             firstFound = true;
                         }
-                        //if (positions.length < 7) {
                         positions.push(points[i], points[i + 1], points[i + 2]);
-                        colors.push(20, 20, 130);
-                        // }
-                        // if (positions.length < 7) {
+                        colors.push(2, 2, 2);
                         positions.push(points[j], points[j + 1], points[j + 2]);
-                        colors.push(20, 20, 130);
-                        //}
-
+                        colors.push(2, 2, 2);
                     }
                 }
             }
@@ -195,13 +190,17 @@ function drawLines(scene, points, radius) {
                 var mesh = new THREE.Line(geometry, material);
                 groupLines.add(mesh);
 
-                console.log('positions len: ', positions.length);
+                // console.log('positions len: ', positions.length);
                 positions = [];
                 colors = [];
+            } else {
+                positions = [];
+                colors = [];
+                firstFound = false;
             }
         }
     }
-
+   //console.log('group lines length: ' + groupLines.children.length);
     scene.add(groupLines);
 }
 
@@ -214,7 +213,7 @@ function rotationReset() {
     group.rotation.x = 0;
     group.rotation.z = 0;
 
-    groupLines.rotation.x= 0;
+    groupLines.rotation.x = 0;
     groupLines.rotation.y = 0;
     groupLines.rotation.z = 0;
 
@@ -242,18 +241,19 @@ function showSpheres(numSpheres) {
     }
 
     for (var i = 0; i < numSpheres; i++) {
-        if (i + 1 < groupPoints.children.length)
-            groupPoints.children[i + 1].visible = true;
+        if (i < groupPoints.children.length)
+            groupPoints.children[i].visible = true;
     }
 
+    //console.log('number spheres: ' + group.children.length);
 }
 
 function AddSpheres(radius, group, geometry, mesh) {
-    var deltaAngle = Math.PI / 3;
-    //var offsetAngle = Math.PI / 3;
+    var deltaAngle = Math.PI / 3;    
     var polarAngle = 0;
     var azimuthAngle = 0;
 
+    // Add First layer
     // add North and South pole X-Y axis spheres surrounding the central sphere. 
     for (var i = 0; i < 2; i++) {
         // Make the north pole (polar angle is zero)
@@ -270,10 +270,10 @@ function AddSpheres(radius, group, geometry, mesh) {
         polarAngle = Math.PI;
     }
 
-    polarAngle= deltaAngle;
+    polarAngle = deltaAngle;
     azimuthAngle = 0;
-    
-    while (azimuthAngle < Math.PI *1.01) {
+
+    while (azimuthAngle < Math.PI *1.8 ) {
         polarAngle = deltaAngle;
         // Add X-Z Axis spheres surrounding the central sphere. 2 in front
         for (var i = 0; i < 2; i++) {
@@ -288,9 +288,52 @@ function AddSpheres(radius, group, geometry, mesh) {
             group.add(sphere);
             polarAngle += deltaAngle;
         }
-        polarAngle = Math.PI + deltaAngle;
+        
+        azimuthAngle += deltaAngle;
+    }
 
-        // Add X-Z Axis spheres surrounding the central sphere. 2 in back.
+    // ****************************************************************************************
+    // ########   Add 2nd layer   ##############################################
+    // ****************************************************************************************
+    radius *= 2;
+    polarAngle = 0;
+    azimuthAngle = 0;
+    var northPoint = [];
+    var southPoint = [];
+    var firstPoint = true;
+    // add North and South pole X-Y axis spheres surrounding the central sphere. 
+    for (var i = 0; i < 2; i++) {
+        // Make the north pole (polar angle is zero)
+        var sphere = new THREE.Mesh(geometry, mesh);
+
+        sphere.position.x = calcSphericalToX(radius, polarAngle, azimuthAngle);
+        sphere.position.z = calcSphericalToY(radius, polarAngle, azimuthAngle);
+        sphere.position.y = calcSphericalToZ(radius, polarAngle);
+
+        points.push(sphere.position.x, sphere.position.y, sphere.position.z);
+        if (firstPoint) {
+            northPoint.push(sphere.position.x, sphere.position.y, sphere.position.z);
+            firstPoint = false;
+        } else {
+            southPoint.push(sphere.position.x, sphere.position.y, sphere.position.z);
+        }
+
+        group.add(sphere);
+
+        polarAngle = Math.PI;
+    }
+
+    polarAngle = deltaAngle;
+    azimuthAngle = 0;
+
+    var topPt = [];
+    var botPt = [];
+    while (azimuthAngle < Math.PI * 1.9) {
+        polarAngle = deltaAngle;
+        firstPoint = true;
+        topPt = [];
+        botPt = [];
+        // Add X-Z Axis spheres surrounding the central sphere. 2 in front
         for (var i = 0; i < 2; i++) {
             var sphere = new THREE.Mesh(geometry, mesh);
 
@@ -300,11 +343,51 @@ function AddSpheres(radius, group, geometry, mesh) {
 
             points.push(sphere.position.x, sphere.position.y, sphere.position.z);
 
+            if (firstPoint) {
+                topPt.push(sphere.position.x, sphere.position.y, sphere.position.z);
+                firstPoint = false;
+            } else {
+                botPt.push(sphere.position.x, sphere.position.y, sphere.position.z);
+            }
             group.add(sphere);
             polarAngle += deltaAngle;
         }
+        // calculate point between the two spheres to get the 'mid' sphere.
+        var z1 = (topPt[2] + botPt[2]) / 2.0;
+        var y1 = (topPt[1] + botPt[1]) / 2.0;
+        var x1 = (topPt[0] + botPt[0]) / 2.0;
+
+        var sphere = new THREE.Mesh(geometry, mesh);
+        sphere.position.x = x1;
+        sphere.position.y = y1;
+        sphere.position.z = z1;
+        points.push(x1, y1, z1);
+        group.add(sphere);
+
+        // calculate point between the two spheres of north pole to get the 'mid' sphere close to the north pole.
+        x1 = (northPoint[0] + topPt[0]) / 2.0;
+        y1 = (northPoint[1] + topPt[1]) / 2.0;
+        z1 = (northPoint[2] + topPt[2]) / 2.0;
+        sphere = new THREE.Mesh(geometry, mesh);
+        sphere.position.x = x1;
+        sphere.position.y = y1;
+        sphere.position.z = z1;
+        points.push(x1, y1, z1);
+        group.add(sphere);
+
+        // calculate point between the two spheres of south pole to get the 'mid' sphere close to the south pole.
+        x1 = (southPoint[0] + botPt[0]) / 2.0;
+        y1 = (southPoint[1] + botPt[1]) / 2.0;
+        z1 = (southPoint[2] + botPt[2]) / 2.0;
+        sphere = new THREE.Mesh(geometry, mesh);
+        sphere.position.x = x1;
+        sphere.position.y = y1;
+        sphere.position.z = z1;
+        points.push(x1, y1, z1);
+        group.add(sphere);
+
         azimuthAngle += deltaAngle;
-    }
+    }   
 }
 
 function calcSphericalToX(radius, polarAngle, azimuthAngle) {
