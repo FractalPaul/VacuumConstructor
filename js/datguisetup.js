@@ -11,80 +11,84 @@ var vacuumParms = {
     depthTest: false,
     depthWrite: true,
     wireframe: false,
-    wireframeline: 0.2
+    wireframeline: 0.2,
+    drawLines: true,
+    drawPoints: true,
+    firstLayer: true,
+    secondLayer: true,
 }
 
 window.onload = function () {
 
-    gui.add(vacuumParms, 'numSpheres', 0, 47, 1)
+    _gui.add(vacuumParms, 'numSpheres', 0, 47, 1)
         .name("# of Spheres")
-        .onChange(function (newValue) { // Listen to changes within the GUI
+        .onChange(function (newValue) { // Listen to changes within the _gui
             //console.log("Value changed to:  ", newValue);
             showSpheres(vacuumParms.numSpheres);
         })
-        .listen(); // Listen to changes outside the GUI - GUI will update when changed from outside
+        .listen(); // Listen to changes outside the gui - GUI will update when changed from outside
 
-    gui.addColor(vacuumParms, 'color')
+    _gui.addColor(vacuumParms, 'color')
         .onChange(function (newValue) {
-            meshMaterial.color.set(newValue);
+            _meshMaterial.color.set(newValue);
         })
         .listen();
 
-    gui.add(vacuumParms, 'zoom', 1, 10)
+    _gui.add(vacuumParms, 'zoom', 1, 10)
         .onChange(function (newValue) {
             scaleCamera();
         })
         .listen();
 
-    gui.add(vacuumParms, 'opacity', 0, 1)
+    _gui.add(vacuumParms, 'opacity', 0, 1)
         .onChange(function (newValue) {
             //console.log("Num Spheres changed to: ",newValue);
-            meshMaterial.opacity = vacuumParms.opacity;
+            _meshMaterial.opacity = vacuumParms.opacity;
             //drawGeometry();
         })
-        .listen(); // Listen to changes outside the GUI - GUI will update when changed from outside
-    gui.add(vacuumParms, 'roughness', 0, 1)
+        .listen(); // Listen to changes outside the gui - GUI will update when changed from outside
+    _gui.add(vacuumParms, 'roughness', 0, 1)
         .name("Reflectivity")
         .onChange(function (newValue) {
-            meshMaterial.roughness = vacuumParms.roughness;
+            _meshMaterial.roughness = vacuumParms.roughness;
         })
         .listen();
 
-    gui.add(vacuumParms, 'metalness', 0, 1)
+    _gui.add(vacuumParms, 'metalness', 0, 1)
         .name("Shine")
         .onChange(function (newValue) {
-            meshMaterial.metalness = vacuumParms.metalness;
+            _meshMaterial.metalness = vacuumParms.metalness;
         })
         .listen();
 
-    gui.add(vacuumParms, 'depthTest')
+    _gui.add(vacuumParms, 'depthTest')
         .name("Depth Overlay")
         .onChange(function (newValue) {
-            meshMaterial.depthTest = vacuumParms.depthTest;
+            _meshMaterial.depthTest = vacuumParms.depthTest;
         })
         .listen();
 
-    gui.add(vacuumParms, 'depthWrite')
+    _gui.add(vacuumParms, 'depthWrite')
         .name("Depth Write")
         .onChange(function (newValue) {
-            meshMaterial.depthWrite = vacuumParms.depthWrite;
+            _meshMaterial.depthWrite = vacuumParms.depthWrite;
         })
         .listen();
 
-    gui.add(vacuumParms, 'wireframe')
+    _gui.add(vacuumParms, 'wireframe')
         .name('Wireframe')
         .onChange(function (newValue) {
-            meshMaterial.wireframe = vacuumParms.wireframe;
+            _meshMaterial.wireframe = vacuumParms.wireframe;
         })
         .listen();
 
-    gui.add(vacuumParms, 'rotateAnimation')
+    _gui.add(vacuumParms, 'rotateAnimation')
         .name('Animate Rotation ')
         .onChange(function (newValue) {
 
         })
         .listen();
-    gui.add(vacuumParms, 'rotateReset')
+    _gui.add(vacuumParms, 'rotateReset')
         .name('Rotation Reset')
         .onChange(function (newValue) {
             if (vacuumParms.rotateReset) {
@@ -93,4 +97,15 @@ window.onload = function () {
             }
         })
         .listen();
+    _gui.add(vacuumParms, 'drawLines')
+        .name("Draw Lines")
+        .onChange(function(newValue) {
+            showLines(newValue);
+        })
+        .listen();
+    _gui.add(vacuumParms, 'drawPoints')
+        .name('Draw Points')
+        .onChange(function(newValue){
+showPoints(newValue);
+        });
 };
