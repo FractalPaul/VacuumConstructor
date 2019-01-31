@@ -1,5 +1,5 @@
 var vacuumParms = {
-    numSpheres: 14,
+    numSpheres: 60,
     color: 0x2f7dbd,
     opacity: 0.2,
     zoom: 5,
@@ -20,7 +20,7 @@ var vacuumParms = {
 
 window.onload = function () {
 
-    _gui.add(vacuumParms, 'numSpheres', 0, 47, 1)
+    _gui.add(vacuumParms, 'numSpheres', 0, 338, 1)
         .name("# of Spheres")
         .onChange(function (newValue) { // Listen to changes within the _gui
             //console.log("Value changed to:  ", newValue);
@@ -88,6 +88,7 @@ window.onload = function () {
 
         })
         .listen();
+
     _gui.add(vacuumParms, 'rotateReset')
         .name('Rotation Reset')
         .onChange(function (newValue) {
